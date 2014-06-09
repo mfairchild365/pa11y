@@ -24,7 +24,8 @@
 		"node": ">=0.10"
 	},
 	"dependencies": {
-		"truffler": "~0.1"
+		"truffler": "~0.1",
+		"underscore": "~1.6"
 	},
 	"devDependencies": {
 		"jshint": "~2.5",
