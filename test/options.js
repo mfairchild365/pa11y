@@ -51,6 +51,10 @@ describe('options', function () {
 			assert.isObject(options.applyDefaults({}));
 		});
 
+		it('should default the `config` option to an empty object', function () {
+			assert.deepEqual(options.applyDefaults({}).config, {});
+		});
+
 		it('should default the `rules` option to an empty array', function () {
 			assert.deepEqual(options.applyDefaults({}).rules, []);
 		});

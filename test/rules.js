@@ -67,6 +67,14 @@ describe('rules', function () {
 			assert.deepEqual(rules.loadRules(['foo', 'bar']), ['baz', 'qux']);
 		});
 
+		it('should pass in matching rule configurations if given', function () {
+			var fooConfig = {foo: true};
+			var barConfig = {bar: true};
+			rules.loadRules(['foo', 'bar'], {foo: fooConfig, bar: barConfig});
+			assert.strictEqual(rules.loadRule.withArgs('foo', fooConfig).callCount, 1);
+			assert.strictEqual(rules.loadRule.withArgs('bar', barConfig).callCount, 1);
+		});
+
 	});
 
 	it('should have a `loadRule` method', function () {
@@ -74,27 +82,33 @@ describe('rules', function () {
 	});
 
 	describe('.loadRule()', function () {
-		var fooModule, barModule, bazModule;
+		var fooModule, fooModuleBound, barModule, barModuleBound, bazModule, bazModuleBound;
 
 		beforeEach(function () {
-			fooModule = sinon.spy();
-			barModule = sinon.spy();
-			bazModule = sinon.spy();
+			fooModule = function () {};
+			barModule = function () {};
+			bazModule = function () {};
+			fooModuleBound = function () {};
+			barModuleBound = function () {};
+			bazModuleBound = function () {};
+			sinon.stub(fooModule, 'bind').returns(fooModuleBound);
+			sinon.stub(barModule, 'bind').returns(barModuleBound);
+			sinon.stub(bazModule, 'bind').returns(bazModuleBound);
 		});
 
 		it('should load in the expected internal module', function () {
 			mockery.registerMock('../rule/foo', fooModule);
-			assert.strictEqual(rules.loadRule('foo'), fooModule);
+			assert.strictEqual(rules.loadRule('foo'), fooModuleBound);
 		});
 
 		it('should load in the expected external module if present', function () {
 			mockery.registerMock('foo', fooModule);
-			assert.strictEqual(rules.loadRule('foo'), fooModule);
+			assert.strictEqual(rules.loadRule('foo'), fooModuleBound);
 		});
 
 		it('should load in the expected npm module if present', function () {
 			mockery.registerMock('pa11y-rule-foo', fooModule);
-			assert.strictEqual(rules.loadRule('foo'), fooModule);
+			assert.strictEqual(rules.loadRule('foo'), fooModuleBound);
 		});
 
 		it('should attempt to load modules in the correct order (internal, npm, external)', function () {
@@ -104,9 +118,16 @@ describe('rules', function () {
 			mockery.registerMock('../rule/foo', fooModule);
 			mockery.registerMock('pa11y-rule-foo', null);
 			mockery.registerMock('pa11y-rule-bar', barModule);
-			assert.strictEqual(rules.loadRule('foo'), fooModule);
-			assert.strictEqual(rules.loadRule('bar'), barModule);
-			assert.strictEqual(rules.loadRule('baz'), bazModule);
+			assert.strictEqual(rules.loadRule('foo'), fooModuleBound);
+			assert.strictEqual(rules.loadRule('bar'), barModuleBound);
+			assert.strictEqual(rules.loadRule('baz'), bazModuleBound);
+		});
+
+		it('should bind the rule config to the rule function if given', function () {
+			var config = {foo: 'bar'};
+			mockery.registerMock('../rule/foo', fooModule);
+			rules.loadRule('foo', config);
+			assert.strictEqual(fooModule.bind.withArgs(config).callCount, 1);
 		});
 
 		it('should error when a rule is not found', function () {

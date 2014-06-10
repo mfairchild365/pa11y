@@ -106,6 +106,10 @@ describe('suites', function () {
 			assert.isObject(suites.applyDefaults({}));
 		});
 
+		it('should default the `config` option to an empty object', function () {
+			assert.deepEqual(suites.applyDefaults({}).config, {});
+		});
+
 		it('should default the `rules` option to an empty array', function () {
 			assert.deepEqual(suites.applyDefaults({}).rules, []);
 		});

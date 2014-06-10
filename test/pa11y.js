@@ -77,13 +77,14 @@ describe('pa11y', function () {
 			assert.strictEqual(options.resolveRules.withArgs(opts).callCount, 1);
 		});
 
-		it('should load the resolved rules', function () {
+		it('should load the resolved rules with config', function () {
 			var opts = {
-				resolvedRules: ['foo', 'bar']
+				resolvedRules: ['foo', 'bar'],
+				config: {foo: 1, bar: 2}
 			};
 			options.resolveRules.returns(opts);
 			pa11y.init({});
-			assert.strictEqual(rules.loadRules.withArgs(opts.resolvedRules).callCount, 1);
+			assert.strictEqual(rules.loadRules.withArgs(opts.resolvedRules, opts.config).callCount, 1);
 		});
 
 		it('should create a truffler test function', function () {
