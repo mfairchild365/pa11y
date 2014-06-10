@@ -36,7 +36,7 @@ describe('pa11y', function () {
 			resolveRules: sinon.stub().returns({})
 		};
 		rules = {
-			load: sinon.stub()
+			loadRules: sinon.stub()
 		};
 		truffler = {
 			init: sinon.stub()
@@ -83,7 +83,7 @@ describe('pa11y', function () {
 			};
 			options.resolveRules.returns(opts);
 			pa11y.init({});
-			assert.strictEqual(rules.load.withArgs(opts.resolvedRules).callCount, 1);
+			assert.strictEqual(rules.loadRules.withArgs(opts.resolvedRules).callCount, 1);
 		});
 
 		it('should create a truffler test function', function () {
@@ -98,7 +98,7 @@ describe('pa11y', function () {
 		});
 
 		it('should pass the loaded rules into truffler', function () {
-			rules.load.returns(['foo', 'bar']);
+			rules.loadRules.returns(['foo', 'bar']);
 			pa11y.init();
 			assert.deepEqual(truffler.init.getCall(0).args[0], ['foo', 'bar']);
 		});
