@@ -22,7 +22,7 @@ var mockery = require('mockery');
 var sinon = require('sinon');
 
 describe('pa11y', function () {
-	var pa11y, rules, truffler;
+	var options, pa11y, rules, truffler;
 
 	beforeEach(function () {
 		mockery.enable({
@@ -30,14 +30,21 @@ describe('pa11y', function () {
 			warnOnUnregistered: false,
 			warnOnReplace: false
 		});
+
+		options = {
+			applyDefaults: sinon.stub().returns({})
+		};
 		rules = {
 			load: sinon.stub()
 		};
-		mockery.registerMock('./rules', rules);
 		truffler = {
 			init: sinon.stub()
 		};
+
+		mockery.registerMock('./options', options);
+		mockery.registerMock('./rules', rules);
 		mockery.registerMock('truffler', truffler);
+
 		pa11y = require('../lib/pa11y');
 	});
 
@@ -56,16 +63,19 @@ describe('pa11y', function () {
 
 	describe('.init()', function () {
 
-		it('should load the rules found in the `rules` option', function () {
-			pa11y.init({
-				rules: ['foo', 'bar']
-			});
-			assert.strictEqual(rules.load.withArgs(['foo', 'bar']).callCount, 1);
+		it('should apply default options', function () {
+			var opts = {};
+			pa11y.init(opts);
+			assert.strictEqual(options.applyDefaults.withArgs(opts).callCount, 1);
 		});
 
-		it('should default the `rules` option', function () {
-			pa11y.init();
-			assert.strictEqual(rules.load.withArgs([]).callCount, 1);
+		it('should load the rules found in the `rules` option', function () {
+			var opts = {
+				rules: ['foo', 'bar']
+			};
+			options.applyDefaults.returns(opts);
+			pa11y.init({});
+			assert.strictEqual(rules.load.withArgs(opts.rules).callCount, 1);
 		});
 
 		it('should create a truffler test function', function () {
