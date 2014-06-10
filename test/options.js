@@ -123,14 +123,6 @@ describe('options', function () {
 			assert.deepEqual(opts.resolvedRules, ['bar', 'def']);
 		});
 
-		it('should error when a suite is not found', function () {
-			var opts = {
-				rules: [],
-				suite: 'bar'
-			};
-			assert.throws(options.resolveRules.bind(null, opts), 'Suite "bar" could not be loaded');
-		});
-
 	});
 
 });
