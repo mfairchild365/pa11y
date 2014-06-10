@@ -32,7 +32,8 @@ describe('pa11y', function () {
 		});
 
 		options = {
-			applyDefaults: sinon.stub().returns({})
+			applyDefaults: sinon.stub().returns({}),
+			resolveRules: sinon.stub().returns({})
 		};
 		rules = {
 			load: sinon.stub()
@@ -69,13 +70,20 @@ describe('pa11y', function () {
 			assert.strictEqual(options.applyDefaults.withArgs(opts).callCount, 1);
 		});
 
-		it('should load the rules found in the `rules` option', function () {
-			var opts = {
-				rules: ['foo', 'bar']
-			};
+		it('should resolve the rules/suite/excludes', function () {
+			var opts = {};
 			options.applyDefaults.returns(opts);
 			pa11y.init({});
-			assert.strictEqual(rules.load.withArgs(opts.rules).callCount, 1);
+			assert.strictEqual(options.resolveRules.withArgs(opts).callCount, 1);
+		});
+
+		it('should load the resolved rules', function () {
+			var opts = {
+				resolvedRules: ['foo', 'bar']
+			};
+			options.resolveRules.returns(opts);
+			pa11y.init({});
+			assert.strictEqual(rules.load.withArgs(opts.resolvedRules).callCount, 1);
 		});
 
 		it('should create a truffler test function', function () {

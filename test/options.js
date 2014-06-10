@@ -57,4 +57,76 @@ describe('options', function () {
 
 	});
 
+	it('should have a `resolveRules` method', function () {
+		assert.isFunction(options.resolveRules);
+	});
+
+	describe('.resolveRules()', function () {
+		var fooSuite;
+
+		beforeEach(function () {
+			fooSuite = {
+				rules: [
+					'abc',
+					'def'
+				]
+			};
+			mockery.registerMock('../suite/foo', fooSuite);
+		});
+
+		it('should not modify the rules when no suite is specified', function () {
+			var opts = {
+				rules: ['foo', 'bar', 'baz']
+			};
+			options.resolveRules(opts);
+			assert.deepEqual(opts.resolvedRules, ['foo', 'bar', 'baz']);
+		});
+
+		it('should return the expected rules when a suite is specified', function () {
+			var opts = {
+				rules: [],
+				suite: 'foo'
+			};
+			options.resolveRules(opts);
+			assert.deepEqual(opts.resolvedRules, ['abc', 'def']);
+		});
+
+		it('should combine rules from a suite with specified rules', function () {
+			var opts = {
+				rules: ['foo', 'bar'],
+				suite: 'foo'
+			};
+			options.resolveRules(opts);
+			assert.deepEqual(opts.resolvedRules, ['foo', 'bar', 'abc', 'def']);
+		});
+
+		it('should de-duplicate rules when they appear in both a suite and specified rules', function () {
+			var opts = {
+				rules: ['foo', 'bar', 'abc'],
+				suite: 'foo'
+			};
+			options.resolveRules(opts);
+			assert.deepEqual(opts.resolvedRules, ['foo', 'bar', 'abc', 'def']);
+		});
+
+		it('should exclude rules when specified', function () {
+			var opts = {
+				exclude: ['foo', 'abc'],
+				rules: ['foo', 'bar'],
+				suite: 'foo'
+			};
+			options.resolveRules(opts);
+			assert.deepEqual(opts.resolvedRules, ['bar', 'def']);
+		});
+
+		it('should error when a suite is not found', function () {
+			var opts = {
+				rules: [],
+				suite: 'bar'
+			};
+			assert.throws(options.resolveRules.bind(null, opts), 'Suite "bar" could not be loaded');
+		});
+
+	});
+
 });
