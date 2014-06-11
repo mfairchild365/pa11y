@@ -127,11 +127,76 @@ describe('rules', function () {
 			var config = {foo: 'bar'};
 			mockery.registerMock('../rule/foo', fooModule);
 			rules.loadRule('foo', config);
-			assert.strictEqual(fooModule.bind.withArgs(config).callCount, 1);
+			assert.strictEqual(fooModule.bind.withArgs(null, config).callCount, 1);
 		});
 
 		it('should error when a rule is not found', function () {
 			assert.throws(rules.loadRule.bind(null, ['foo']), 'Rule "foo" could not be loaded');
+		});
+
+		it('should error when a rule module does not export a function', function () {
+			mockery.registerMock('../rule/foo', {});
+			assert.throws(rules.loadRule.bind(null, ['foo']), 'Rule "foo" is not a valid rule, module must export a function');
+		});
+
+	});
+
+	it('should have a `resolveRules` method', function () {
+		assert.isFunction(rules.resolveRules);
+	});
+
+	describe('.resolveRules()', function () {
+
+		it('should combine the rules and suite rules', function () {
+			assert.deepEqual(rules.resolveRules(['foo', 'bar'], ['baz', 'qux'], []), ['foo', 'bar', 'baz', 'qux']);
+		});
+
+		it('should deduplicate the rules', function () {
+			assert.deepEqual(rules.resolveRules(['foo', 'bar'], ['bar', 'baz'], []), ['foo', 'bar', 'baz']);
+		});
+
+		it('should exclude rules (from rules and suite rules) based on the ignore parameter', function () {
+			assert.deepEqual(rules.resolveRules(['foo', 'bar'], ['baz', 'qux'], ['bar', 'baz']), ['foo', 'qux']);
+		});
+
+		it('should filter out non-string values', function () {
+			assert.deepEqual(rules.resolveRules(['foo', true, 'bar', {}, undefined], [], []), ['foo', 'bar']);
+		});
+
+		it('should not modify the original arrays', function () {
+			var optsRules = ['foo', 'bar'];
+			var suiteRules = ['baz', 'qux'];
+			rules.resolveRules(optsRules, suiteRules, []);
+			assert.deepEqual(optsRules, ['foo', 'bar']);
+			assert.deepEqual(suiteRules, ['baz', 'qux']);
+		});
+
+	});
+
+	it('should have a `resolveConfig` method', function () {
+		assert.isFunction(rules.resolveConfig);
+	});
+
+	describe('.resolveConfig()', function () {
+
+		it('should combine the config and suite config objects', function () {
+			var optsConfig = {foo: 'bar'};
+			var suiteConfig = {bar: 'baz'};
+			assert.deepEqual(rules.resolveConfig(optsConfig, suiteConfig), {foo: 'bar', bar: 'baz'});
+		});
+
+		it('should use the options config rather than suite config when both define a property', function () {
+			var optsConfig = {foo: 'bar'};
+			var suiteConfig = {foo: 'baz'};
+			assert.deepEqual(rules.resolveConfig(optsConfig, suiteConfig), {foo: 'bar'});
+		});
+
+		it('should not modify the original objects', function () {
+			var optsConfig = {foo: 'bar'};
+			var suiteConfig = {bar: 'baz'};
+			rules.resolveConfig(optsConfig, suiteConfig);
+			assert.isUndefined(optsConfig.bar);
+			assert.isUndefined(suiteConfig.foo);
 		});
 
 	});

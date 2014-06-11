@@ -22,7 +22,7 @@ var mockery = require('mockery');
 var sinon = require('sinon');
 
 describe('pa11y', function () {
-	var options, pa11y, rules, truffler;
+	var options, pa11y, rules, suites, truffler;
 
 	beforeEach(function () {
 		mockery.enable({
@@ -32,11 +32,15 @@ describe('pa11y', function () {
 		});
 
 		options = {
-			applyDefaults: sinon.stub().returns({}),
-			resolveRules: sinon.stub().returns({})
+			applyDefaults: sinon.stub().returns({})
 		};
 		rules = {
-			loadRules: sinon.stub()
+			loadRules: sinon.stub(),
+			resolveRules: sinon.stub().returns([]),
+			resolveConfig: sinon.stub().returns({})
+		};
+		suites = {
+			loadSuite: sinon.stub().returns({})
 		};
 		truffler = {
 			init: sinon.stub()
@@ -44,6 +48,7 @@ describe('pa11y', function () {
 
 		mockery.registerMock('./options', options);
 		mockery.registerMock('./rules', rules);
+		mockery.registerMock('./suites', suites);
 		mockery.registerMock('truffler', truffler);
 
 		pa11y = require('../lib/pa11y');
@@ -70,21 +75,50 @@ describe('pa11y', function () {
 			assert.strictEqual(options.applyDefaults.withArgs(opts).callCount, 1);
 		});
 
-		it('should resolve the rules/suite/excludes', function () {
-			var opts = {};
-			options.applyDefaults.returns(opts);
-			pa11y.init({});
-			assert.strictEqual(options.resolveRules.withArgs(opts).callCount, 1);
+		it('should load the suite if one is specified', function () {
+			options.applyDefaults.returns({
+				suite: 'foo'
+			});
+			pa11y.init();
+			assert.strictEqual(suites.loadSuite.withArgs('foo').callCount, 1);
 		});
 
-		it('should load the resolved rules with config', function () {
+		it('should resolve the rules, suite, and ignore options', function () {
 			var opts = {
-				resolvedRules: ['foo', 'bar'],
-				config: {foo: 1, bar: 2}
+				ignore: ['bar', 'baz'],
+				rules: ['foo', 'bar'],
+				suite: 'foo'
 			};
-			options.resolveRules.returns(opts);
-			pa11y.init({});
-			assert.strictEqual(rules.loadRules.withArgs(opts.resolvedRules, opts.config).callCount, 1);
+			var suite = {
+				rules: ['baz', 'qux']
+			};
+			options.applyDefaults.returns(opts);
+			suites.loadSuite.returns(suite);
+			pa11y.init();
+			assert.strictEqual(rules.resolveRules.withArgs(opts.rules, suite.rules, opts.ignore).callCount, 1);
+		});
+
+		it('should resolve the config and suite config', function () {
+			var opts = {
+				config: {foo: 1, bar: 2},
+				suite: 'foo'
+			};
+			var suite = {
+				config: {baz: 3, qux: 4}
+			};
+			options.applyDefaults.returns(opts);
+			suites.loadSuite.returns(suite);
+			pa11y.init();
+			assert.strictEqual(rules.resolveConfig.withArgs(opts.config, suite.config).callCount, 1);
+		});
+
+		it('should load the resolved rules with the resolved config', function () {
+			var resolvedRules = ['foo', 'bar'];
+			var resolvedConfig = {foo: 1, bar: 2};
+			rules.resolveRules.returns(resolvedRules);
+			rules.resolveConfig.returns(resolvedConfig);
+			pa11y.init();
+			assert.strictEqual(rules.loadRules.withArgs(resolvedRules, resolvedConfig).callCount, 1);
 		});
 
 		it('should create a truffler test function', function () {
@@ -99,9 +133,10 @@ describe('pa11y', function () {
 		});
 
 		it('should pass the loaded rules into truffler', function () {
-			rules.loadRules.returns(['foo', 'bar']);
+			var loadedRules = [function () {}, function () {}];
+			rules.loadRules.returns(loadedRules);
 			pa11y.init();
-			assert.deepEqual(truffler.init.getCall(0).args[0], ['foo', 'bar']);
+			assert.deepEqual(truffler.init.withArgs(loadedRules).callCount, 1);
 		});
 
 	});
