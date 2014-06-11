@@ -130,6 +130,12 @@ describe('rules', function () {
 			assert.strictEqual(fooModule.bind.withArgs(null, config).callCount, 1);
 		});
 
+		it('should bind an empty object to the rule function if no config is given', function () {
+			mockery.registerMock('../rule/foo', fooModule);
+			rules.loadRule('foo');
+			assert.strictEqual(fooModule.bind.withArgs(null, {}).callCount, 1);
+		});
+
 		it('should error when a rule is not found', function () {
 			assert.throws(rules.loadRule.bind(null, ['foo']), 'Rule "foo" could not be loaded');
 		});
