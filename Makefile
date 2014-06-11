@@ -6,6 +6,7 @@ C_RESET=\x1b[0m
 # Group targets
 all: deps lint test
 ci: lint test
+test: test-lib test-rule
 
 # Install dependencies
 deps:
@@ -17,9 +18,14 @@ lint:
 	@echo "$(C_CYAN)> linting javascript$(C_RESET)"
 	@./node_modules/.bin/jshint . --exclude node_modules --config .jshintrc
 
-# Run tests
-test:
-	@echo "$(C_CYAN)> running unit tests$(C_RESET)"
-	@./node_modules/.bin/mocha ./test --reporter spec --colors --recursive
+# Run library tests
+test-lib:
+	@echo "$(C_CYAN)> running lib tests$(C_RESET)"
+	@./node_modules/.bin/mocha ./test/lib --reporter spec --colors --recursive
+
+# Run rule tests
+test-rule:
+	@echo "$(C_CYAN)> running rule tests$(C_RESET)"
+	@./node_modules/.bin/mocha ./test/rule --reporter spec --colors --recursive
 
 .PHONY: test
