@@ -61,13 +61,13 @@ function runProgramOnStdIn () {
 
 function captureStdIn (done) {
 	var data = '';
-    process.stdin.resume();
-    process.stdin.on('data', function (chunk) {
-        data += chunk;
-    });
-    process.stdin.on('end', function () {
-        done(data);
-    });
+	process.stdin.resume();
+	process.stdin.on('data', function (chunk) {
+		data += chunk;
+	});
+	process.stdin.on('end', function () {
+		done(data);
+	});
 }
 
 function runPa11y (context) {
