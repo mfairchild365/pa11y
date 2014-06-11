@@ -21,17 +21,14 @@ module.exports = rule;
 // http://www.w3.org/TR/WCAG20/#text-equiv-all
 // NOTE: rule not complete, only checks `img alt` is present
 function rule (config, dom, report, done) {
-	var level = config.level || 'error';
-
 	getImages(dom).filter(hasMissingAltAttribute).forEach(function (img) {
 		report({
 			code: 'wcag-1.1.1',
-			level: level,
+			level: config.level || 'error',
 			message: 'Images must have alternative text',
 			evidence: img.outerHTML
 		});
 	});
-
 	done();
 }
 
