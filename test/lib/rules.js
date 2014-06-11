@@ -25,17 +25,7 @@ describe('lib/rules', function () {
 	var rules;
 
 	beforeEach(function () {
-		mockery.enable({
-			useCleanCache: true,
-			warnOnUnregistered: false,
-			warnOnReplace: false
-		});
 		rules = require('../../lib/rules');
-	});
-
-	afterEach(function () {
-		mockery.deregisterAll();
-		mockery.disable();
 	});
 
 	it('should be an object', function () {

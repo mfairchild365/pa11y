@@ -14,7 +14,7 @@
 // along with pa11y.  If not, see <http://www.gnu.org/licenses/>.
 
 /* jshint maxstatements: false, maxlen: false */
-/* global afterEach, beforeEach, describe, it */
+/* global beforeEach, describe, it */
 'use strict';
 
 var assert = require('proclaim');
@@ -25,12 +25,6 @@ describe('lib/pa11y', function () {
 	var options, pa11y, rules, suites, truffler;
 
 	beforeEach(function () {
-		mockery.enable({
-			useCleanCache: true,
-			warnOnUnregistered: false,
-			warnOnReplace: false
-		});
-
 		options = {
 			applyDefaults: sinon.stub().returns({})
 		};
@@ -45,18 +39,11 @@ describe('lib/pa11y', function () {
 		truffler = {
 			init: sinon.stub()
 		};
-
 		mockery.registerMock('./options', options);
 		mockery.registerMock('./rules', rules);
 		mockery.registerMock('./suites', suites);
 		mockery.registerMock('truffler', truffler);
-
 		pa11y = require('../../lib/pa11y');
-	});
-
-	afterEach(function () {
-		mockery.deregisterAll();
-		mockery.disable();
 	});
 
 	it('should be an object', function () {

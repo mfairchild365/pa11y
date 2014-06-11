@@ -21,11 +21,11 @@ lint:
 # Run library tests
 test-lib:
 	@echo "$(C_CYAN)> running lib tests$(C_RESET)"
-	@./node_modules/.bin/mocha ./test/lib --reporter spec --colors --recursive
+	@./node_modules/.bin/mocha ./test/setup ./test/lib --reporter spec --colors --recursive
 
 # Run rule tests
 test-rule:
 	@echo "$(C_CYAN)> running rule tests$(C_RESET)"
-	@./node_modules/.bin/mocha ./test/rule --reporter spec --colors --recursive
+	@./node_modules/.bin/mocha ./test/setup ./test/rule --reporter spec --colors --recursive
 
 .PHONY: test

@@ -14,29 +14,18 @@
 // along with pa11y.  If not, see <http://www.gnu.org/licenses/>.
 
 /* jshint maxstatements: false, maxlen: false */
-/* global afterEach, beforeEach, describe, it */
+/* global beforeEach, describe, it */
 'use strict';
 
 var assert = require('proclaim');
 var jsdom = require('jsdom');
-var mockery = require('mockery');
 var sinon = require('sinon');
 
 describe('rule/wcag/1.1.1-non-text-content', function () {
 	var rule;
 
 	beforeEach(function () {
-		mockery.enable({
-			useCleanCache: true,
-			warnOnUnregistered: false,
-			warnOnReplace: false
-		});
 		rule = require('../../../rule/wcag/1.1.1-non-text-content');
-	});
-
-	afterEach(function () {
-		mockery.deregisterAll();
-		mockery.disable();
 	});
 
 	it('should be a function', function () {

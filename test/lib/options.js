@@ -14,27 +14,16 @@
 // along with pa11y.  If not, see <http://www.gnu.org/licenses/>.
 
 /* jshint maxstatements: false, maxlen: false */
-/* global afterEach, beforeEach, describe, it */
+/* global beforeEach, describe, it */
 'use strict';
 
 var assert = require('proclaim');
-var mockery = require('mockery');
 
 describe('lib/options', function () {
 	var options;
 
 	beforeEach(function () {
-		mockery.enable({
-			useCleanCache: true,
-			warnOnUnregistered: false,
-			warnOnReplace: false
-		});
 		options = require('../../lib/options');
-	});
-
-	afterEach(function () {
-		mockery.deregisterAll();
-		mockery.disable();
 	});
 
 	it('should be an object', function () {

@@ -25,17 +25,7 @@ describe('lib/suites', function () {
 	var suites;
 
 	beforeEach(function () {
-		mockery.enable({
-			useCleanCache: true,
-			warnOnUnregistered: false,
-			warnOnReplace: false
-		});
 		suites = require('../../lib/suites');
-	});
-
-	afterEach(function () {
-		mockery.deregisterAll();
-		mockery.disable();
 	});
 
 	it('should be an object', function () {
