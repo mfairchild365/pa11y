@@ -21,7 +21,7 @@ var assert = require('proclaim');
 var mockery = require('mockery');
 var sinon = require('sinon');
 
-describe('pa11y', function () {
+describe('lib/pa11y', function () {
 	var options, pa11y, rules, suites, truffler;
 
 	beforeEach(function () {
@@ -51,7 +51,7 @@ describe('pa11y', function () {
 		mockery.registerMock('./suites', suites);
 		mockery.registerMock('truffler', truffler);
 
-		pa11y = require('../lib/pa11y');
+		pa11y = require('../../lib/pa11y');
 	});
 
 	afterEach(function () {

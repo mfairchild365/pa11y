@@ -21,7 +21,7 @@ var assert = require('proclaim');
 var mockery = require('mockery');
 var sinon = require('sinon');
 
-describe('rules', function () {
+describe('lib/rules', function () {
 	var rules;
 
 	beforeEach(function () {
@@ -30,7 +30,7 @@ describe('rules', function () {
 			warnOnUnregistered: false,
 			warnOnReplace: false
 		});
-		rules = require('../lib/rules');
+		rules = require('../../lib/rules');
 	});
 
 	afterEach(function () {

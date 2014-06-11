@@ -20,7 +20,7 @@
 var assert = require('proclaim');
 var mockery = require('mockery');
 
-describe('options', function () {
+describe('lib/options', function () {
 	var options;
 
 	beforeEach(function () {
@@ -29,7 +29,7 @@ describe('options', function () {
 			warnOnUnregistered: false,
 			warnOnReplace: false
 		});
-		options = require('../lib/options');
+		options = require('../../lib/options');
 	});
 
 	afterEach(function () {

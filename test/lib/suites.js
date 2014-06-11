@@ -21,7 +21,7 @@ var assert = require('proclaim');
 var mockery = require('mockery');
 var sinon = require('sinon');
 
-describe('suites', function () {
+describe('lib/suites', function () {
 	var suites;
 
 	beforeEach(function () {
@@ -30,7 +30,7 @@ describe('suites', function () {
 			warnOnUnregistered: false,
 			warnOnReplace: false
 		});
-		suites = require('../lib/suites');
+		suites = require('../../lib/suites');
 	});
 
 	afterEach(function () {
