@@ -1,6 +1,6 @@
 {
 	"rules": [
-		"wcag-1.1.1-non-text-content"
+		"wcag/1.1.1-non-text-content"
 	],
 	"config": {}
 }
