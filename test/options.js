@@ -41,7 +41,7 @@ describe('options', function () {
 		assert.isObject(options);
 	});
 
-	it('should have a `applyDefaults` method', function () {
+	it('should have an `applyDefaults` method', function () {
 		assert.isFunction(options.applyDefaults);
 	});
 
@@ -55,8 +55,16 @@ describe('options', function () {
 			assert.deepEqual(options.applyDefaults({}).config, {});
 		});
 
+		it('should default the `ignore` option to an empty array', function () {
+			assert.deepEqual(options.applyDefaults({}).ignore, []);
+		});
+
 		it('should default the `rules` option to an empty array', function () {
 			assert.deepEqual(options.applyDefaults({}).rules, []);
+		});
+
+		it('should default the `suite` option to `null`', function () {
+			assert.isNull(options.applyDefaults({}).suite);
 		});
 
 	});
