@@ -24,6 +24,7 @@
 		"node": ">=0.10"
 	},
 	"dependencies": {
+		"commander": "~2.2",
 		"truffler": "~0.1",
 		"underscore": "~1.6"
 	},
@@ -40,6 +41,6 @@
 		"test": "make ci"
 	},
 	"bin": {
-		"pa11y": "./bin/pa11y"
+		"pa11y": "./bin/pa11y.js"
 	}
 }
