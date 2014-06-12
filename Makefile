@@ -6,7 +6,7 @@ C_RESET=\x1b[0m
 # Group targets
 all: deps lint test
 ci: lint test
-test: test-lib test-rule
+test: test-lib test-bin test-rule
 
 # Install dependencies
 deps:
@@ -22,6 +22,11 @@ lint:
 test-lib:
 	@echo "$(C_CYAN)> running lib tests$(C_RESET)"
 	@./node_modules/.bin/mocha ./test/setup ./test/lib --reporter spec --colors --recursive
+
+# Run binary tests
+test-bin:
+	@echo "$(C_CYAN)> running bin tests$(C_RESET)"
+	@./node_modules/.bin/mocha ./test/bin --reporter spec --colors --recursive --slow 500
 
 # Run rule tests
 test-rule:

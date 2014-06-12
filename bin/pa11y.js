@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
 // This file is part of pa11y.
-// 
+//
 // pa11y is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // pa11y is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with pa11y.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -71,9 +71,8 @@ function captureStdIn (done) {
 }
 
 function runPa11y (context) {
-	var test;
 	try {
-		test = pa11y.init({
+		var test = pa11y.init({
 			ignore: program.ignore,
 			rules: program.rules,
 			suite: program.suite
@@ -82,7 +81,9 @@ function runPa11y (context) {
 			if (err) {
 				return reportError(err);
 			}
-			console.log(results);
+			var errorCount = results.filter(isErrorResult).length;
+			console.log(JSON.stringify(results));
+			process.exit(errorCount);
 		});
 	} catch (err) {
 		return reportError(err);
@@ -92,4 +93,8 @@ function runPa11y (context) {
 function reportError (err) {
 	console.error('Error:', err.message);
 	process.exit(-1);
+}
+
+function isErrorResult (result) {
+	return (result.level === 'error');
 }
