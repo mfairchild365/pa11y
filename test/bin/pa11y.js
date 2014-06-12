@@ -49,14 +49,14 @@ describe('bin/pa11y', function () {
 	});
 
 	it('should report no results when called with no suite/rules', function (done) {
-		run('./pa11y.js "<p>foo</p>"', function (err, stdout) {
+		run('./pa11y.js "<p>foo</p>" --reporter json', function (err, stdout) {
 			assert.strictEqual(stdout.trim(), '[]');
 			done();
 		});
 	});
 
 	it('should work with stdin', function (done) {
-		run('echo "<p>foo</p>" | ./pa11y.js', function (err, stdout) {
+		run('echo "<p>foo</p>" | ./pa11y.js --reporter json', function (err, stdout) {
 			assert.strictEqual(stdout.trim(), '[]');
 			assert.isNull(err);
 			done();
@@ -64,7 +64,7 @@ describe('bin/pa11y', function () {
 	});
 
 	it('should report the expected results when called with a suite', function (done) {
-		run('./pa11y.js "<p>foo</p>" --suite test', function (err, stdout) {
+		run('./pa11y.js "<p>foo</p>" --suite test --reporter json', function (err, stdout) {
 			assert.strictEqual(stdout.trim(), JSON.stringify([
 				{message: 'foo', level: 'error'},
 				{message: 'bar', level: 'warning'}
@@ -74,7 +74,7 @@ describe('bin/pa11y', function () {
 	});
 
 	it('should report the expected results when called with rules', function (done) {
-		run('./pa11y.js "<p>foo</p>" --rules test/foo,test/bar', function (err, stdout) {
+		run('./pa11y.js "<p>foo</p>" --rules test/foo,test/bar --reporter json', function (err, stdout) {
 			assert.strictEqual(stdout.trim(), JSON.stringify([
 				{message: 'foo', level: 'error'},
 				{message: 'bar', level: 'warning'}
@@ -84,21 +84,21 @@ describe('bin/pa11y', function () {
 	});
 
 	it('should report the expected results when called with ignore rules', function (done) {
-		run('./pa11y.js "<p>foo</p>" --rules test/foo,test/bar --ignore test/foo,test/bar', function (err, stdout) {
+		run('./pa11y.js "<p>foo</p>" --rules test/foo,test/bar --ignore test/foo,test/bar --reporter json', function (err, stdout) {
 			assert.strictEqual(stdout.trim(), '[]');
 			done();
 		});
 	});
 
 	it('should exit with a code equal to the number of errors reported', function (done) {
-		run('./pa11y.js "<p>foo</p>" --rules test/foo,test/bar,test/baz', function (err) {
+		run('./pa11y.js "<p>foo</p>" --rules test/foo,test/bar,test/baz --reporter json', function (err) {
 			assert.strictEqual(err.code, 2);
 			done();
 		});
 	});
 
 	it('should report an error when one occurs in initialisation', function (done) {
-		run('./pa11y.js "<p>foo</p>" --rules test/notatest', function (err, stdout, stderr) {
+		run('./pa11y.js "<p>foo</p>" --rules test/notatest --reporter json', function (err, stdout, stderr) {
 			assert.strictEqual(stderr.trim(), 'Error: Rule "test/notatest" could not be loaded');
 			assert.strictEqual(err.code, 255);
 			done();

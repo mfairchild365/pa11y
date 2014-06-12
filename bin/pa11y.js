@@ -17,6 +17,7 @@
 
 'use strict';
 
+var loadReporter = require('../lib/reporters').loadReporter;
 var pa11y = require('../lib/pa11y');
 var pkg = require('../package.json');
 var program = require('commander');
@@ -31,7 +32,8 @@ function initProgram () {
 		.option('-s, --suite [name]', 'The name of a suite to use rules from')
 		.option('-r, --rules [rules]', 'A comma-separated list of rules to use', optionToArray)
 		.option('-i, --ignore [rules]', 'A comma-separated list of rules to ignore', optionToArray)
-		.option('-c. --config [file]', 'The name of a pa11y configuration file')
+		.option('-c, --config [file]', 'The name of a pa11y configuration file')
+		.option('-R, --reporter [reporter]', 'The name of a reporter to use', 'cli')
 		.parse(process.argv);
 }
 
@@ -72,6 +74,7 @@ function captureStdIn (done) {
 
 function runPa11y (context) {
 	try {
+		var reporter = loadReporter(program.reporter);
 		var test = pa11y.init({
 			ignore: program.ignore,
 			rules: program.rules,
@@ -81,9 +84,13 @@ function runPa11y (context) {
 			if (err) {
 				return reportError(err);
 			}
-			var errorCount = results.filter(isErrorResult).length;
-			console.log(JSON.stringify(results));
-			process.exit(errorCount);
+			var info = {
+				name: pkg.name,
+				version: pkg.version,
+				context: context
+			};
+			reporter(info, console, results);
+			process.exit(results.filter(isErrorResult).length);
 		});
 	} catch (err) {
 		return reportError(err);
