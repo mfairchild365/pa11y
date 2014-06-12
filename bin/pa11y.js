@@ -17,6 +17,7 @@
 
 'use strict';
 
+var chalk = require('chalk');
 var loadReporter = require('../lib/reporters').loadReporter;
 var pa11y = require('../lib/pa11y');
 var pkg = require('../package.json');
@@ -98,7 +99,7 @@ function runPa11y (context) {
 }
 
 function reportError (err) {
-	console.error('Error:', err.message);
+	console.error(chalk.red('Error:', err.message));
 	process.exit(-1);
 }
 
