@@ -35,6 +35,7 @@ function initProgram () {
 		.option('-i, --ignore [rules]', 'A comma-separated list of rules to ignore', optionToArray)
 		.option('-c, --config [file]', 'The name of a pa11y configuration file')
 		.option('-R, --reporter [reporter]', 'The name of a reporter to use', 'cli')
+		.option('-u, --useragent [ua]', 'The user-agent to send to the page being tested', null)
 		.parse(process.argv);
 }
 
@@ -76,11 +77,7 @@ function captureStdIn (done) {
 function runPa11y (context) {
 	try {
 		var reporter = loadReporter(program.reporter);
-		var test = pa11y.init({
-			ignore: program.ignore,
-			rules: program.rules,
-			suite: program.suite
-		});
+		var test = pa11y.init(buildPa11yOptions(program));
 		test(context, function (err, results) {
 			if (err) {
 				return reportError(err);
@@ -96,6 +93,18 @@ function runPa11y (context) {
 	} catch (err) {
 		return reportError(err);
 	}
+}
+
+function buildPa11yOptions (program) {
+	var opts = {
+		ignore: program.ignore,
+		rules: program.rules,
+		suite: program.suite
+	};
+	if (program.useragent) {
+		opts.useragent = program.useragent;
+	}
+	return opts;
 }
 
 function reportError (err) {
