@@ -22,7 +22,12 @@ module.exports = reporter;
 function reporter (info, console, results) {
 	console.log(chalk.cyan.underline('Running %s %s'), info.name, info.version);
 	console.log(chalk.grey(info.context));
-	results.forEach(reportResult.bind(null, console));
+	console.log('');
+	if (results.length) {
+		results.forEach(reportResult.bind(null, console));
+	} else {
+		console.log(chalk.green('Success: no issues were found'));
+	}
 	console.log('');
 }
 

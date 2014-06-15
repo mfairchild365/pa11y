@@ -90,6 +90,13 @@ describe('bin/pa11y', function () {
 		});
 	});
 
+	it('should exit with a code of `0` when no errors are found', function (done) {
+		run('./pa11y.js "<p>foo</p>" --rules test/bar --reporter json', function (err) {
+			assert.isNull(err);
+			done();
+		});
+	});
+
 	it('should exit with a code equal to the number of errors reported', function (done) {
 		run('./pa11y.js "<p>foo</p>" --rules test/foo,test/bar,test/baz --reporter json', function (err) {
 			assert.strictEqual(err.code, 2);
