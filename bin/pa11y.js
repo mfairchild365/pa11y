@@ -77,7 +77,8 @@ function captureStdIn (done) {
 function runPa11y (context) {
 	try {
 		var reporter = loadReporter(program.reporter);
-		var test = pa11y.init(buildPa11yOptions(program));
+		var opts = buildPa11yOptions(program);
+		var test = pa11y.init(opts);
 		test(context, function (err, results) {
 			if (err) {
 				return reportError(err);
@@ -85,7 +86,8 @@ function runPa11y (context) {
 			var info = {
 				name: pkg.name,
 				version: pkg.version,
-				context: context
+				context: context,
+				options: opts
 			};
 			reporter(info, console, results);
 			process.exit(results.filter(isErrorResult).length);
@@ -101,6 +103,9 @@ function buildPa11yOptions (program) {
 		rules: program.rules,
 		suite: program.suite
 	};
+	if (!opts.rules && !opts.suite) {
+		opts.suite = 'wcag2aa';
+	}
 	if (program.useragent) {
 		opts.useragent = program.useragent;
 	}
