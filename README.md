@@ -197,7 +197,27 @@ Rules can be published as [npm][npm] modules, and pa11y will attempt to load the
 Writing Your Own CLI Reporters
 ------------------------------
 
-TODO: write documentation
+You can write your own command-line reporters for pa11y. Reporter modules export a function which is executed by pa11y when it has a full array of results:
+
+```js
+module.exports = function (info, console, results) {
+    ...
+}
+```
+
+This function should accept three arguments:
+
+- **info:** *(object)* An object with the following properties:
+  - **name:** *(string)* The name of the library (always `pa11y`)
+  - **version:** *(string)* The version of pa11y being run
+  - **context:** *(string)* The context that was tested
+  - **options:** *(object)* The options passed into pa11y
+- **console:** *(object)* A console object which has the same functions as [Node's built-in console][console], this should be used to send output
+- **results:** *(array)* An array of results to be reported
+
+The [existing pa11y reporters](reporter) are a good place to start when working out how to write new ones.
+
+Reporters can be published as [npm][npm] modules, and pa11y will attempt to load these if it can't find a built-in reporter. Your module will need to export a function, and use the naming pattern: `pa11y-reporter-<name>`.
 
 
 Contributing
@@ -222,6 +242,7 @@ Copyright &copy; 2014, Nature Publishing Group
 
 
 
+[console]: http://nodejs.org/api/stdio.html
 [gpl3]: http://www.gnu.org/licenses/gpl-3.0.html
 [jsdom]: https://github.com/tmpvar/jsdom
 [npm]: https://npmjs.org/
