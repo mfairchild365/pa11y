@@ -94,15 +94,81 @@ Usage
 var pa11y = require('pa11y');
 ```
 
-### Creating a tester
+### Creating A Tester
 
-Create a test function using `pa11y.init()`.
+Create a test function using `pa11y.init()`. This accepts an [options](#options) object which can be used to change pa11y's behaviour.
+
+`pa11y.init` returns a function, which will be used to test individual URLs and HTML snippets.
 
 ```js
-var test = pa11y.init({ ... });
+var test = pa11y.init({
+    ...
+});
 ```
 
-TODO: write documentation
+### Running Tests
+
+Once you have a test function, you can use it multiple times to test different URLs and HTML snippets. It accepts a `context` argument, and a callback.
+
+```js
+test('http://example.com/', function (err, results) {
+    ...
+});
+
+test('<p>Hello World!</p>', function (err, results) {
+    ...
+});
+```
+
+The callback function will be called with an error object if something went wrong, and a `results` array which will contain the test results.
+
+### Options
+
+The following options are available when initialising pa11y. You'll always need to specify either a suite, or an array of rules – otherwise pa11y won't report anything.
+
+#### `options.suite` *(string)*
+
+Specify a suite of rules to use. The following suites are available:
+
+- wcag2a
+- wcag2aa
+- wcag2aaa
+
+Defaults to `null`;
+
+#### `options.rules` *(array)*
+
+Provide an array of rules to test with. Defaults to `[]`.
+
+#### `options.ignore` *(array)*
+
+Provide an array of rules to ignore, this can be used to disable rules in a suite you've specified. Defaults to `[]`.
+
+#### `options.config` *(object)*
+
+Provide configurations for individual rules. This is explained further in the [configuration docs](#configuration). Defaults to `{}`.
+
+#### `options.useragent` *(string)*
+
+Specify a user-agent to send to the page being tested. Defaults to `pa11y/<version>`.
+
+### Configuration
+
+Individual rules can be configured with the `config` option. This allows you to do things like change the error level or alter the way the rules test your code. Different rules have different configurations, refer to the rule documentation (TODO).
+
+```js
+// TODO: update this when the wcag/1.4.3 rule is actually written
+var test = pa11y.init({
+    rules: ['wcag/1.4.3-minimum-contrast'],
+    config: {
+        'wcag/1.4.3-minimum-contrast': {
+            level: 'warning',
+            ratio: '4.5:1',
+            ratioLargeText: '3:1'
+        }
+    }
+});
+```
 
 
 Writing Your Own Accessibility Rules
