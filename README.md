@@ -174,7 +174,24 @@ var test = pa11y.init({
 Writing Your Own Accessibility Rules
 ------------------------------------
 
-TODO: write documentation
+You can write your own accessibility rules for pa11y, both to include in the core or publish as external modules. Rule modules simply export a function which is executed by pa11y as part of the testing process:
+
+```js
+module.exports = function (config, dom, report, done) {
+    ...
+}
+```
+
+This function should accept four arguments:
+
+- **config:** *(object)* The rule config as specified in the [configurations](#configuration) that are passed into pa11y
+- **dom:** *(object)* a [jsdom][jsdom] instance which contains the DOM to be tested
+- **report:** *(function)* A function which can be used to report back to pa11y
+- **done:** *(function)* A function which must be called when the rule has finished testing
+
+The [existing pa11y rules](rule/wcag) are a good place to start when working out how to write new ones.
+
+Rules can be published as [npm][npm] modules, and pa11y will attempt to load these if it can't find a built-in rule. Your module will need to export a function, and use the naming pattern: `pa11y-rule-<name>`.
 
 
 Writing Your Own CLI Reporters
@@ -206,6 +223,7 @@ Copyright &copy; 2014, Nature Publishing Group
 
 
 [gpl3]: http://www.gnu.org/licenses/gpl-3.0.html
+[jsdom]: https://github.com/tmpvar/jsdom
 [npm]: https://npmjs.org/
 [travis]: https://travis-ci.org/nature/pa11y
 [travis-img]: https://travis-ci.org/nature/pa11y.svg?branch=master
