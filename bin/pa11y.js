@@ -33,7 +33,6 @@ function initProgram () {
 		.option('-s, --suite [name]', 'The name of a suite to use rules from')
 		.option('-r, --rules [rules]', 'A comma-separated list of rules to use', optionToArray)
 		.option('-i, --ignore [rules]', 'A comma-separated list of rules to ignore', optionToArray)
-		.option('-c, --config [file]', 'The name of a pa11y configuration file')
 		.option('-R, --reporter [reporter]', 'The name of a reporter to use', 'cli')
 		.option('-u, --useragent [ua]', 'The user-agent to send to the page being tested', null)
 		.parse(process.argv);
