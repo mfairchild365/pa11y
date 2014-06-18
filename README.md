@@ -247,4 +247,4 @@ Copyright &copy; 2014, Nature Publishing Group
 [jsdom]: https://github.com/tmpvar/jsdom
 [npm]: https://npmjs.org/
 [travis]: https://travis-ci.org/nature/pa11y
-[travis-img]: https://travis-ci.org/nature/pa11y.svg?branch=master
+[travis-img]: https://travis-ci.org/nature/pa11y.svg?branch=2.x
